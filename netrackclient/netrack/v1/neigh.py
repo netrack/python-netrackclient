@@ -1,6 +1,6 @@
 class NeighManager(object):
 
-    def add(self):
+    def update(self):
         pass
 
     def delete(self):

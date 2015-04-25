@@ -1,6 +1,6 @@
-class AddressManager(object):
+class NetworkManager(object):
 
-    def add(self):
+    def update(self):
         pass
 
     def delete(self):

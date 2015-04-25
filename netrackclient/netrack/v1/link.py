@@ -1,4 +1,4 @@
 class LinkManager(object):
 
-    def show(self):
+    def update(self):
         pass
