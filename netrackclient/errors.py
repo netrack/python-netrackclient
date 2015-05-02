@@ -2,6 +2,10 @@ class BaseError(Exception):
     pass
 
 
+class VersionError(BaseError):
+    pass
+
+
 class LinkError(BaseError):
     pass
 

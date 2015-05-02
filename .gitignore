@@ -53,5 +53,8 @@ docs/_build/
 # PyBuilder
 target/
 
-# vim files
+# Vim files
 *.swp
+
+# Python enviromnent
+.venv/

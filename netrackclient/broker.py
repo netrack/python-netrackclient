@@ -3,6 +3,7 @@ import abc
 
 import requests
 
+
 @six.add_metaclass(abc.ABCMeta)
 class BaseRequestBroker(object):
 
@@ -15,15 +16,31 @@ class BaseRequestBroker(object):
         pass
 
 
-@sit.add_metaclass(abc.ABCMeta)
+@six.add_metaclass(abc.ABCMeta)
 class BaseRequest(object):
 
     @abc.abstractmethod
-    def header(self, header):
+    def add_header(self, header, value):
         pass
 
     @abc.abstractmethod
-    def add_header(self, header, value):
+    def get(self, url, body, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def put(self, url, body, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def delete(self, url, body, **kwargs):
+        pass
+
+
+@six.add_metaclass(abc.ABCMeta)
+class BaseResponse(object):
+
+    @abc.abstractmethod
+    def header(self, header):
         pass
 
     @abc.abstractmethod
@@ -31,17 +48,41 @@ class BaseRequest(object):
         pass
 
     @abc.abstractmethod
-    def request(self, method, url, body, **kwargs):
+    def body(self):
         pass
 
 
 class RequestBroker(object):
 
+    __instance = None
+
+    def __new__(cls):
+        if not cls.__instance:
+            cls.__instance = object.__new__(cls)
+        return cls.__instance
+
     def http_request(self):
-        return self._constructor
+        return self._constructor()
 
     def set_http_request(self, constructor):
         self._constructor = constructor
+
+
+class Response(object):
+
+    def __init__(self, response):
+        super(Response, self).__init__()
+
+        self._response = response
+
+    def header(self, header):
+        return self._response.headers[header]
+
+    def headers(self):
+        return self._response.headers
+
+    def body(self):
+        return self._response.json()
 
 
 class Request(object):
@@ -49,14 +90,39 @@ class Request(object):
     def __init__(self):
         super(Request, self).__init__()
 
+        # use requests library
         self._request = requests
         self._headers = {}
 
-    def header(self, header):
-        return self._headers.get(header)
-
     def add_header(self, header, value):
-        self._haeders[header] = value
+        self._headers[header] = value
 
-    def headers(self):
-        return self._headers
+    def get(self, url, **kwargs):
+        response = self._request.get(
+            url,
+            headers=self._headers,
+            **kwargs)
+
+        return Response(response)
+
+    def put(self, url, body, **kwargs):
+        response = self._request.put(
+            url,
+            headers=self._headers,
+            data=body,
+            **kwargs)
+
+        return Response(response)
+
+    def delete(self, url, body, **kwargs):
+        response = self._request.delete(
+            url,
+            headers=self._headers,
+            data=body,
+            **kwargs)
+
+        return Response(response)
+
+
+__broker = RequestBroker()
+__broker.set_http_request(Request)
