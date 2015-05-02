@@ -2,6 +2,7 @@ from netrackclient.netrack.v1 import constants
 
 import collections
 
+
 _Link = collections.namedtuple("Link", [
     "encapsulation",
     "address",
@@ -52,11 +53,7 @@ class LinkManager(object):
                          datapath=datapath)
 
         response = self.client.get(url)
-
-        interfaces = []
-        for interface in response.body():
-            interfaces.append(Link(**interface))
-        return interfaces
+        return [Link(**link) for link in response.body()]
 
     def delete(self, datapath, interface):
         self.client.delete(self._url(

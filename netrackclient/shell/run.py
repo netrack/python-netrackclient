@@ -1,3 +1,4 @@
+from netrackclient import netrack
 from netrackclient.netrack.v1 import client
 from netrackclient.shell import core
 from netrackclient.shell.commands import ip
@@ -26,10 +27,16 @@ def main():
     app.setup()
 
     app.argument(["-s", "--service-url"],
-        dict(help="service endpoint", default="http://127.0.0.1:8080"))
+        dict(help="service endpoint",
+             default="http://127.0.0.1:8080"))
 
     app.argument(["-d", "--datapath"],
         dict(help="OpenFlow switch identifier"))
+
+    app.argument(["-v", "--version"],
+        dict(help="print version and exit",
+             action="version",
+             version="%(prog)s {0}".format(netrack.__version__)))
 
     # run the application
     app.start()
