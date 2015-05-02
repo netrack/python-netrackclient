@@ -6,7 +6,6 @@ import ipaddress
 _Network = collections.namedtuple("Network", [
     "encapsulation",
     "address",
-    "broadcast",
     "interface",
     "interface_name",
 ])
@@ -20,10 +19,6 @@ class Network(_Network):
 
 
 class NetworkManager(object):
-    __encapsulation = {
-        ipaddress.IPv4Interface: "IPv4",
-        ipaddress.IPv6Interface: "IPv6",
-    }
 
     def __init__(self, client):
         super(NetworkManager, self).__init__()
@@ -37,8 +32,9 @@ class NetworkManager(object):
                           interface=interface)
 
     def _encapsulation(self, address):
+        #TODO: add support of other protocols
         network = ipaddress.ip_interface(address)
-        return self.__encapsulation[network.__class__]
+        return "ipv{0}".format(network.version)
 
     def update(self, datapath, interface, network):
         url = self._url(datapath, interface)

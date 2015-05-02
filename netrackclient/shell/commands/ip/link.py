@@ -12,7 +12,7 @@ class Link(core.BaseCommand):
         aliases = ["s"]
         help = "set device attributes"
         arguments = [
-            (["dev"],
+            (["device"],
              dict(metavar="NAME", help="specifies the network device to operate on")),
 
             (["-a", "--address"],
@@ -20,14 +20,14 @@ class Link(core.BaseCommand):
         ]
 
         def handle(self, context):
-            context.client.network.update(
+            context.client.link.update(
                 # switch identifier (or local port name)
                 context.args.datapath,
                 # switch port name
                 context.args.device,
                 # link configuration
                 link.Link(
-                    encapsulation="ETHERNET-II#802.3",
+                    encapsulation="ieee-802.3",
                     address=context.args.address,
                 ))
 

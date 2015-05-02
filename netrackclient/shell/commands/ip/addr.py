@@ -76,10 +76,9 @@ class Addr(core.BaseCommand):
                     addr=link.address))
 
             if network.address:
-                print("    inet/{proto} {addr} brd {bcast} scope global {interface}".format(
+                print("    inet/{proto} {addr} scope global {interface}".format(
                     proto=network.encapsulation.lower(),
                     addr=network.address,
-                    bcast=network.broadcast,
                     interface=link.interface_name))
 
         def handle(self, context):
