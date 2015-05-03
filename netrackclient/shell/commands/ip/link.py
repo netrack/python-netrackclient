@@ -36,15 +36,10 @@ class Link(core.BaseCommand):
         aliases = ["delete", "d"]
         help = "delete device attributes"
         arguments = [
-            (["address"],
-             dict(metavar="ADDRESS",
-                  help="station address of the interface",
-                  nargs="?")),
-
-            (["-d", "--device"],
+            (["device"],
              dict(metavar="NAME",
                   help="network device to operate on",
-                  required=True)),
+                  nargs="?")),
         ]
 
         def handle(self, context):
@@ -74,10 +69,12 @@ class Link(core.BaseCommand):
 
         def handle(self, context):
             links_fetcher = context.client.link.list
+
             args = (context.args.datapath,)
+            make_fetcher = lambda func: lambda *args: [func(*args)]
 
             if context.args.device:
-                liks_fetcher = context.client.link.get
+                links_fetcher = make_fetcher(context.client.link.get)
                 args = (context.args.datapath, context.args.device)
 
             links = links_fetcher(*args)

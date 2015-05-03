@@ -56,7 +56,5 @@ class LinkManager(object):
         return [Link(**link) for link in response.body()]
 
     def delete(self, datapath, interface):
-        self.client.delete(self._url(
-            datapath=datapath,
-            interface=interface,
-        ))
+        url = self._url(datapath, interface)
+        self.client.delete(url, None)

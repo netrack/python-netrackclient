@@ -86,10 +86,11 @@ class Addr(core.BaseCommand):
             links_fetcher = context.client.link.list
 
             args = (context.args.datapath,)
+            make_fetcher = lambda func: lambda *args: [func(*args)]
 
             if context.args.device:
-                networks_fetcher = context.client.network.get
-                links_fetcher = context.client.link.get
+                networks_fetcher = make_fetcher(context.client.network.get)
+                links_fetcher = make_fetcher(context.client.link.get)
                 args = (context.args.datapath, context.args.device)
 
             networks = networks_fetcher(*args)

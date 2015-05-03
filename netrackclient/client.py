@@ -36,7 +36,7 @@ class HTTPClient(object):
         request = self._request()
         url = self.service_url + uri
         body = json.dumps(body)
-        return request.put(url, body, **kwargs)
+        return request.delete(url, body, **kwargs)
 
 
 __version_map = {
