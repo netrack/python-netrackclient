@@ -1,3 +1,4 @@
+from netrackclient import errors
 from netrackclient.netrack.v1 import constants
 
 import collections
@@ -33,22 +34,34 @@ class RouteManager(object):
 
     def update(self, datapath, route):
         url = self._url(datapath)
-        self.client.put(url, body=[dict(
-            network=route.network,
-            via=route.via,
-            interface_name=route.interface_name,
-        )])
+
+        try:
+            self.client.put(url, body=[dict(
+                network=route.network,
+                via=route.via,
+                interface_name=route.interface_name,
+            )])
+        except errors.BaseError as e:
+            raise errors.RouteError(*e.args)
 
     def list(self, datapath):
         url = self._url(datapath)
 
-        response = self.client.get(url)
+        try:
+            response = self.client.get(url)
+        except errors.BaseError as e:
+            raise errors.RouteError(*e.args)
+
         return [Route(**route) for route in response.body()]
 
     def delete(self, datapath, route):
         url = self._url(datapath)
-        self.client.delete(url, body=[dict(
-            network=route.network,
-            via=route.via,
-            interface_name=route.interface_name,
-        )])
+
+        try:
+            self.client.delete(url, body=[dict(
+                network=route.network,
+                via=route.via,
+                interface_name=route.interface_name,
+            )])
+        except errors.BaseError as e:
+            raise errors.RouteError(*e.args)

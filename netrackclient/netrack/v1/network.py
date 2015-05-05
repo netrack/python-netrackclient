@@ -1,3 +1,4 @@
+from netrackclient import errors
 from netrackclient.netrack.v1 import constants
 
 import collections
@@ -41,16 +42,24 @@ class NetworkManager(object):
 
         # parse address to configure encapsulation
         encapsulation = self._encapsulation(network.address)
-        self.client.put(url, body=dict(
-            encapsulation=encapsulation,
-            address=network.address,
-        ))
+
+        try:
+            self.client.put(url, body=dict(
+                encapsulation=encapsulation,
+                address=network.address,
+            ))
+        except errors.BaseError as e:
+            raise errors.NetworkError(*e.args)
 
     def get(self, datapath, interface):
-        response = self.client.get(self._url(
-            datapath=datapath,
-            interface=interface,
-        ))
+
+        try:
+            response = self.client.get(self._url(
+                datapath=datapath,
+                interface=interface,
+            ))
+        except errors.BaseError as e:
+            raise errors.NetworkError(*e.args)
 
         return Network(**response.body())
 
@@ -59,7 +68,10 @@ class NetworkManager(object):
         url = url.format(url_prefix=constants.URL_PREFIX,
                          datapath=datapath)
 
-        response = self.client.get(url)
+        try:
+            response = self.client.get(url)
+        except errors.BaseErorr as e:
+            raise errors.NetworkError(*e.args)
 
         interfaces = []
         for interface in response.body():
@@ -71,7 +83,11 @@ class NetworkManager(object):
 
         # parse address to configure encapsulation
         encapsulation = self._encapsulation(network.address)
-        self.client.delete(url, body=dict(
-            encapsulation=encapsulation,
-            address=network.address,
-        ))
+
+        try:
+            self.client.delete(url, body=dict(
+                encapsulation=encapsulation,
+                address=network.address,
+            ))
+        except errors.BaseError as e:
+            raise errors.NetworkError(*e.args)

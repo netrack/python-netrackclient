@@ -20,26 +20,29 @@ class App(core.App):
 
 
 def main():
-    # create an application
-    app = App(prog="netrack", modules=[ip.IP])
+    try:
+        # create an application
+        app = App(prog="netrack", modules=[ip.IP])
 
-    # setup the application
-    app.setup()
+        # setup the application
+        app.setup()
 
-    app.argument(["-s", "--service-url"],
-        dict(help="service endpoint",
-             default="http://127.0.0.1:8080"))
+        app.argument(["-s", "--service-url"],
+            dict(help="service endpoint",
+                 default="http://127.0.0.1:8080"))
 
-    app.argument(["-d", "--datapath"],
-        dict(help="OpenFlow switch identifier"))
+        app.argument(["-d", "--datapath"],
+            dict(help="OpenFlow switch identifier"))
 
-    app.argument(["-v", "--version"],
-        dict(help="print version and exit",
-             action="version",
-             version="%(prog)s {0}".format(netrack.__version__)))
+        app.argument(["-v", "--version"],
+            dict(help="print version and exit",
+                 action="version",
+                 version="%(prog)s {0}".format(netrack.__version__)))
 
-    # run the application
-    app.start()
+        # run the application
+        app.start()
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

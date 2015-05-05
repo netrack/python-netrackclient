@@ -1,3 +1,4 @@
+from netrackclient import errors
 from netrackclient.netrack.v1 import constants
 
 import collections
@@ -34,16 +35,23 @@ class LinkManager(object):
     def update(self, datapath, interface, link):
         url = self._url(datapath, interface)
 
-        self.client.put(url, body=dict(
-            encapsulation=link.encapsulation,
-            address=link.address,
-        ))
+        try:
+            self.client.put(url, body=dict(
+                encapsulation=link.encapsulation,
+                address=link.address,
+            ))
+        except errors.BaseError as e:
+            raise errors.LinkError(*e.args)
 
     def get(self, datapath, interface):
-        response = self.client.get(self._url(
-            datapath=datapath,
-            interface=interface,
-        ))
+
+        try:
+            response = self.client.get(self._url(
+                datapath=datapath,
+                interface=interface,
+            ))
+        except errors.BaseError as e:
+            raise errors.LinkError(*e.args)
 
         return Link(**response.body())
 
@@ -52,9 +60,18 @@ class LinkManager(object):
         url = url.format(url_prefix=constants.URL_PREFIX,
                          datapath=datapath)
 
-        response = self.client.get(url)
+        try:
+            response = self.client.get(url)
+        except errors.BaseError as e:
+            raise errors.LinkError(*e.args)
+
         return [Link(**link) for link in response.body()]
 
     def delete(self, datapath, interface):
         url = self._url(datapath, interface)
-        self.client.delete(url, None)
+
+        try:
+            self.client.delete(url, None)
+
+        except errors.BaseError as e:
+            raise errors.LinkError(*e.args)

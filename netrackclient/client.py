@@ -1,6 +1,7 @@
 import sys
 import json
 import importlib
+import http.client
 import traceback
 
 from netrackclient import broker
@@ -24,19 +25,34 @@ class HTTPClient(object):
     def get(self, uri, **kwargs):
         request = self._request()
         url = self.service_url + uri
-        return request.get(url, **kwargs)
+
+        response = request.get(url, **kwargs)
+        if response.status() != http.client.OK:
+            raise errors.BaseError(response.body())
+
+        return response
 
     def put(self, uri, body, **kwargs):
         request = self._request()
         url = self.service_url + uri
         body = json.dumps(body)
-        return request.put(url, body, **kwargs)
+
+        response = request.put(url, body, **kwargs)
+        if response.status() != http.client.OK:
+            raise errors.BaseError(response.body())
+
+        return response
 
     def delete(self, uri, body, **kwargs):
         request = self._request()
         url = self.service_url + uri
         body = json.dumps(body)
-        return request.delete(url, body, **kwargs)
+
+        response = request.delete(url, body, **kwargs)
+        if response.status() != http.client.OK:
+            raise errors.BaseError(response.body())
+
+        return response
 
 
 __version_map = {

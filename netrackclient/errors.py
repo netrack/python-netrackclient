@@ -1,5 +1,11 @@
 class BaseError(Exception):
-    pass
+
+    def __str__(self):
+        err, *other = self.args
+        if err:
+            return "UNEXPERR: {0}".format(err.get("error"))
+
+        return super(Exception, self).__str__()
 
 
 class VersionError(BaseError):
@@ -7,16 +13,30 @@ class VersionError(BaseError):
 
 
 class LinkError(BaseError):
-    pass
 
+    def __str__(self):
+        err, *other = self.args
+        if err:
+            return "LINKERR: {0}".format(err.get("error"))
 
-class LinkAddressFormatError(LinkError):
-    pass
+        return super(BaseError, self).__str__()
 
 
 class NetworkError(BaseError):
-    pass
+
+    def __str__(self):
+        err, *other = self.args
+        if err:
+            return "NETWERR: {0}".format(err.get("error"))
+
+        return super(BaseError, self).__str__()
 
 
-class NetworkAddressFormatError(NetworkError):
-    pass
+class RouteError(BaseError):
+
+    def __str__(self):
+        err, *other = self.args
+        if err:
+            return "ROUTEERR: {0}".format(err.get("error"))
+
+        return super(BaseError, self).__str__()

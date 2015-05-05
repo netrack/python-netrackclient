@@ -71,9 +71,9 @@ class Route(core.BaseCommand):
         help = "look at routing table"
 
         def render(self, route):
-            via = "via {0}".format(route.via) if route.via else None
+            via = " via {0}".format(route.via) if route.via else ""
 
-            print("{network} {via} dev {interface} proto {type}".format(
+            print("{network}{via} dev {interface} proto {type}".format(
                 network=route.network,
                 via=via,
                 interface=route.interface_name,

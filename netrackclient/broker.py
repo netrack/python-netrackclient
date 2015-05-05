@@ -51,6 +51,10 @@ class BaseResponse(object):
     def body(self):
         pass
 
+    @abc.abstractmethod
+    def status(self):
+        pass
+
 
 class RequestBroker(object):
 
@@ -68,7 +72,7 @@ class RequestBroker(object):
         self._constructor = constructor
 
 
-class Response(object):
+class Response(BaseResponse):
 
     def __init__(self, response):
         super(Response, self).__init__()
@@ -83,6 +87,9 @@ class Response(object):
 
     def body(self):
         return self._response.json()
+
+    def status(self):
+        return self._response.status_code
 
 
 class Request(object):
