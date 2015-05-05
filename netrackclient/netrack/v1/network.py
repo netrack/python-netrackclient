@@ -71,7 +71,7 @@ class NetworkManager(object):
 
         # parse address to configure encapsulation
         encapsulation = self._encapsulation(network.address)
-        self.client.put(url, body=dict(
+        self.client.delete(url, body=dict(
             encapsulation=encapsulation,
             address=network.address,
         ))
