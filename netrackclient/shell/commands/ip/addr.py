@@ -66,9 +66,12 @@ class Addr(core.BaseCommand):
         ]
 
         def render(self, link, network):
-            print("{index}: {interface}: <BROADCAST,UP,LOWER_UP>".format(
+            print("{index}: {interface}: <{config}> state {state} {features}".format(
                 index=link.interface,
-                interface=link.interface_name))
+                interface=link.interface_name,
+                config=link.config or "UNKNOWN",
+                state=link.state or "UNKNOWN",
+                features=link.features or ""))
 
             if link.address:
                 print("    link/{proto} {addr} brd ffff.ffff.ffff".format(
@@ -103,3 +106,56 @@ class Addr(core.BaseCommand):
 
             # render links and networks
             list(map(lambda args: self.render(*args), zip(links, networks)))
+
+    class Module(core.BaseCommand):
+        name = "module"
+        aliases = ["mod"]
+        help = "configure protocol modules"
+        arguments = [
+            (["module"],
+             dict(metavar="NAME",
+                  help="protocol module name",
+                  nargs="?")),
+        ]
+
+        class Show(core.BaseCommand):
+            name = "show"
+            help = "look at protocol modules"
+
+            def render(self, module):
+                print("{name} <{state}> {desc}".format(
+                    name=module.name,
+                    state=module.state,
+                    desc=module.description))
+
+            def handle(self, context):
+                modules_fetcher = context.client.netmod.list
+
+                args = (context.args.datapath,)
+                make_fetcher = lambda func: lambda *args: [func(*args)]
+
+                if context.args.module:
+                    modules_fetcher = make_fetcher(context.client.netmod.get)
+                    args = (context.args.datapath, context.args.module)
+
+                modules = modules_fetcher(*args)
+                list(map(self.render, modules))
+
+
+        class On(core.BaseCommand):
+            name = "on"
+            help = "turn on specified protocol module"
+
+            def handle(self, context):
+                context.client.netmod.enable(
+                    datapath=context.args.datapath,
+                    module=context.args.module)
+
+        class Off(core.BaseCommand):
+            name = "off"
+            help = "turp off specified protocol module"
+
+            def handle(self, context):
+                context.client.netmod.disable(
+                    datapath=context.args.datapath,
+                    module=context.args.module)
