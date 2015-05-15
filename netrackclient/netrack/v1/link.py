@@ -7,6 +7,9 @@ import collections
 _Link = collections.namedtuple("Link", [
     "encapsulation",
     "address",
+    "state",
+    "config",
+    "features",
     "interface",
     "interface_name",
 ])
@@ -27,7 +30,7 @@ class LinkManager(object):
         self.client = client
 
     def _url(self, datapath, interface):
-        url = "{url_prefix}/datapaths/{datapath}/interfaces/{interface}/link"
+        url = "{url_prefix}/datapaths/{datapath}/link/interfaces/{interface}"
         return url.format(url_prefix=constants.URL_PREFIX,
                           datapath=datapath,
                           interface=interface)
@@ -56,7 +59,7 @@ class LinkManager(object):
         return Link(**response.body())
 
     def list(self, datapath):
-        url = "{url_prefix}/datapaths/{datapath}/interfaces/links"
+        url = "{url_prefix}/datapaths/{datapath}/link/interfaces"
         url = url.format(url_prefix=constants.URL_PREFIX,
                          datapath=datapath)
 

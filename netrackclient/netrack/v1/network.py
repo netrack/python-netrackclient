@@ -27,7 +27,7 @@ class NetworkManager(object):
         self.client = client
 
     def _url(self, datapath, interface):
-        url = "{url_prefix}/datapaths/{datapath}/interfaces/{interface}/network"
+        url = "{url_prefix}/datapaths/{datapath}/network/interfaces/{interface}"
         return url.format(url_prefix=constants.URL_PREFIX,
                           datapath=datapath,
                           interface=interface)
@@ -64,7 +64,7 @@ class NetworkManager(object):
         return Network(**response.body())
 
     def list(self, datapath):
-        url = "{url_prefix}/datapaths/{datapath}/interfaces/networks"
+        url = "{url_prefix}/datapaths/{datapath}/network/interfaces"
         url = url.format(url_prefix=constants.URL_PREFIX,
                          datapath=datapath)
 

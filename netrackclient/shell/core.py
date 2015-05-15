@@ -1,7 +1,6 @@
 import argparse
-import abc, six
-import types
-import importlib
+import abc
+import six
 
 from netrackclient.shell import mixin
 
